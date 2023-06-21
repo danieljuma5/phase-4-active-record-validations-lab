@@ -3,12 +3,13 @@ class Post < ApplicationRecord
   validates :content, length: { minimum: 250 }
   validates :summary, length: { maximum: 250 }
   validates :category, inclusion: {within: ["Fiction","Non-Fiction"]}
-  validate :dont_allow_true_facts
+  validate :clickbait_title
   # Custom Validation
 
-  def dont_allow_true_facts
-    if title == "True Facts"
-      errors.add(:title, "Title cannot be True Facts")
+  def clickbait_title
+    clickbait_keywords = ["Won't Believe", "Secret", "Top", "Guess"]
+    if title.present? && !clickbait_keywords.any?{|keyword| title.include?(keyword)}
+      errors.add(:title, "Not clickbaity enough!")
     end
   end
 
